@@ -37,7 +37,6 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         size++;
     }
 
-
     public void addLast(T item) {
         Node<T> newNode = new Node<>(item);
         if (isEmpty()) {
@@ -49,7 +48,6 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         last = newNode;
         size++;
     }
-
 
     public T removeFirst() {
         checkIsEmpty();
@@ -67,7 +65,6 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         return data;
     }
 
-
     public T removeLast() {
         checkIsEmpty();
         T data = last.data;
@@ -84,9 +81,9 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         return data;
     }
 
-
     private class DoubleEndedIterator implements Iterator<T> {
         private Node<T> current = first;
+        private Node<T> lastReturned = null;
 
         @Override
         public boolean hasNext() {
@@ -99,8 +96,26 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
                 throw new NoSuchElementException();
             }
             T data = current.data;
+            lastReturned = current;
             current = current.next;
             return data;
+        }
+
+        @Override
+        public void remove() {
+            if (lastReturned == null) {
+                throw new IllegalStateException("remove() can only be called once after next()");
+            }
+            if (lastReturned == first) {
+                removeFirst();
+            } else if (lastReturned == last) {
+                removeLast();
+            } else {
+                lastReturned.prev.next = lastReturned.next;
+                lastReturned.next.prev = lastReturned.prev;
+                size--;
+            }
+            lastReturned = null;
         }
     }
 
@@ -129,7 +144,6 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         }
     }
 
-
     public int find(T item) {
         Node<T> current = first;
         int index = 0;
@@ -143,7 +157,6 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         return -1;
     }
 
-
     public void updateAtIndex(int index, T newItem) {
         checkIndex(index);
         Node<T> current = first;
@@ -153,18 +166,15 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         current.data = newItem;
     }
 
-
     public T getFirst() {
         checkIsEmpty();
         return first.data;
     }
 
-
     public T getLast() {
         checkIsEmpty();
         return last.data;
     }
-
 
     public void clear() {
         first = null;
@@ -172,21 +182,17 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
         size = 0;
     }
 
-
     public boolean contains(T item) {
         return find(item) != -1;
     }
-
 
     public boolean isEmpty() {
         return size == 0;
     }
 
-
     public int size() {
         return size;
     }
-
 
     public T get(int index) {
         checkIndex(index);
@@ -210,19 +216,19 @@ public class DoubleEndedQueue<T> implements Iterable<T> {
             }
             current.prev.next = current.next;
             current.next.prev = current.prev;
-            current.next = null;
-            current.prev = null;
             size--;
         }
     }
+
     private void checkIndex(int index) {
         if (isEmpty() || index < 0 || index >= size()) {
             throw new NoSuchElementException("Invalid index");
         }
     }
+
     private void checkIsEmpty() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Очередь пуста");
+            throw new NoSuchElementException("The queue is empty");
         }
     }
 }

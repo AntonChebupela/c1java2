@@ -1,7 +1,6 @@
 package queue;
 
 public class Task {
-
     private String title;
     private String description;
     private boolean priority;
@@ -42,22 +41,8 @@ public class Task {
         this.priority = priority;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Task task)) return false;
-
-        if (isPriority() != task.isPriority()) return false;
-        if (getTitle() != null ? !getTitle().equals(task.getTitle()) : task.getTitle() != null) return false;
-        return getDescription() != null ? getDescription().equals(task.getDescription()) : task.getDescription() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getTitle() != null ? getTitle().hashCode() : 0;
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (isPriority() ? 1 : 0);
-        return result;
+    public String getType() {
+        return isPriority() ? "Priority" : "Regular";
     }
 
     @Override
@@ -65,7 +50,7 @@ public class Task {
         return "Task{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", priority=" + priority +
+                ", type='" + getType() + '\'' +
                 '}';
     }
 }
