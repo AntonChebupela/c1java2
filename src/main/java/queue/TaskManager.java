@@ -1,7 +1,6 @@
 package queue;
 
 import java.util.Iterator;
-import java.util.Scanner;
 
 public class TaskManager {
     private final DoubleEndedQueue<Task> tasks;
@@ -25,30 +24,32 @@ public class TaskManager {
         System.out.println("Regular task added: " + task.getTitle());
     }
 
-    public void performPriorityTask() {
+    public void performTask() {
+        boolean performed = false;
+
+        // Пытаемся выполнить приоритетную задачу
         Iterator<Task> iterator = tasks.iterator();
         while (iterator.hasNext()) {
             Task task = iterator.next();
             if (task.isPriority()) {
                 System.out.println("Priority task performed: " + task.getTitle());
-                iterator.remove();  // Remove the element from the queue.
-                return;
+                iterator.remove();
+                performed = true;
+                break;
             }
         }
-        System.out.println("No priority tasks to perform.");
-    }
 
-    public void performRegularTask() {
-        Iterator<Task> iterator = tasks.iterator();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (!task.isPriority()) {
+        // Если приоритетная задача не найдена, выполняем обычную задачу
+        if (!performed) {
+            iterator = tasks.iterator();
+            if (iterator.hasNext()) {
+                Task task = iterator.next();
                 System.out.println("Regular task performed: " + task.getTitle());
                 iterator.remove();
-                return;
+            } else {
+                System.out.println("No tasks to perform.");
             }
         }
-        System.out.println("No regular tasks to perform.");
     }
 
     public void displayTasks() {

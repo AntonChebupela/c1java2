@@ -1,75 +1,58 @@
 package queue;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import queue.Task;
-import queue.TaskManager;
-
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskManagerTest {
 
-    TaskManager taskManager = new TaskManager();
+    private TaskManager taskManager;
 
     @BeforeEach
     void setUp() {
-        taskManager = new TaskManager();
-    }
-
-    private void printSeparator() {
-        System.out.println("_____________________________");
+        taskManager = new TaskManager(new DoubleEndedQueue<>());
     }
 
     @Test
-    void testTask1() {
-        taskManager.addPriorityTask(new Task("Priority 1", "Perform urgent task 1"));
-        taskManager.addPriorityTask(new Task("Priority 2", "Prepare a report for a meeting 2"));
-        taskManager.addRegularTask(new Task("Regular 1", "Send a letter to a client 3"));
-        taskManager.addRegularTask(new Task("Regular 2", "Order office supplies 4"));
+    void testAddAndPerformTasks() {
 
-        printSeparator();
-        taskManager.performPriorityTask();
-        taskManager.performRegularTask();
-        printSeparator();
+        taskManager.addPriorityTask(new Task("Priority 1", "Urgent task"));
+        taskManager.addRegularTask(new Task("Regular 1", "Normal task"));
+        taskManager.addPriorityTask(new Task("Priority 2", "Another urgent task"));
+        taskManager.addRegularTask(new Task("Regular 2", "Another normal task"));
 
-        if (taskManager.size() > 0) {
-            taskManager.displayTasks();
-        } else {
-            System.out.println("Task queue is empty.");
-        }
+        taskManager.performTask();
+        taskManager.performTask();
+        taskManager.performTask();
+        taskManager.performTask();
 
-        System.out.println("------------------------------"); // Добавляем разделение
+        assertEquals(0, taskManager.size());
     }
 
     @Test
-    void testTask2() {
-        taskManager.addPriorityTask(new Task("Priority 1", "Prepare an important report 1"));
-        taskManager.addRegularTask(new Task("Regular 1", "Send a letter to a client 2"));
-        taskManager.addPriorityTask(new Task("Priority 2", "Call investors 3"));
-        taskManager.addRegularTask(new Task("Regular 2", "Prepare sales report 4"));
+    void testPerformTaskWhenEmpty() {
 
-        printSeparator();
-        while (taskManager.size() > 0) {
-            if (Math.random() < 0.5) {
-                taskManager.performPriorityTask();
-            } else {
-                taskManager.performRegularTask();
-            }
-        }
+        taskManager.performTask();
+        assertEquals(0, taskManager.size());
+    }
 
-        if (taskManager.size() > 0) {
-            System.out.println("Remaining tasks:");
-            taskManager.displayTasks();
-        } else {
-            System.out.println("------------------------------");
-            System.out.println("Task queue is empty.");
-        }
+    @Test
+    void testAddTask() {
 
-        System.out.println("------------------------------"); // Добавляем разделение
+        taskManager.addPriorityTask(new Task("Priority", "Urgent task"));
+        taskManager.addRegularTask(new Task("Regular", "Normal task"));
+
+        assertEquals(2, taskManager.size());
+    }
+
+    @Test
+    void testDisplayTasks() {
+
+        taskManager.addPriorityTask(new Task("Priority", "Urgent task"));
+        taskManager.addRegularTask(new Task("Regular", "Normal task"));
+
+
+        assertEquals(2, taskManager.size());
     }
 
 }
