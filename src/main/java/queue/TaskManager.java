@@ -81,6 +81,15 @@ public class TaskManager {
             System.out.println("No regular tasks.");
         }
     }
+    public void initializeDefaultTasks() {
+        // Добавление приоритетных задач
+        addPriorityTask(new Task("Срочный отчёт", "Подготовить ежемесячный отчёт для руководства.", true));
+        addPriorityTask(new Task("Обновление системы", "Выполнить срочное обновление программного обеспечения.", true));
+
+        // Добавление обычных задач
+        addRegularTask(new Task("Встреча с клиентом", "Обсудить детали нового проекта с клиентом."));
+        addRegularTask(new Task("План маркетинга", "Разработать план маркетинга на следующий квартал."));
+    }
 
     public int size() {
         return tasks.size();
